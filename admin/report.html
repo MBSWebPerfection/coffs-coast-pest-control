@@ -1,0 +1,575 @@
+                        <span>Subfloor</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaExterior" class="form-checkbox">
+                        <span>Exterior (within 50m)</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaGarage" class="form-checkbox">
+                        <span>Garage/Carport</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaFences" class="form-checkbox">
+                        <span>Fences & Stumps (within 50m)</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaTrees" class="form-checkbox">
+                        <span>Trees & Landscaping (within 50m)</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaRetainingWalls" class="form-checkbox">
+                        <span>Retaining Walls</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaSubtermite" class="form-checkbox">
+                        <span>Subtermite Shields</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaOther" class="form-checkbox">
+                        <span>Other:</span>
+                        <input type="text" id="tiAreaOtherSpecify" class="form-input w-48 ml-2" placeholder="Specify">
+                    </label>
+                </div>
+            </section>
+            
+            <!-- Termite Risk Rating -->
+            <section class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                <h2 class="section-title">Subterranean Termite Risk Rating</h2>
+                <p class="text-sm text-gray-500 mb-4">Select the appropriate risk rating based on inspection findings:</p>
+                <div class="space-y-3">
+                    <div class="border rounded-lg p-4">
+                        <label class="flex items-start space-x-3">
+                            <input type="radio" name="tiRiskRating" id="tiRiskLow" class="form-radio mt-1">
+                            <div>
+                                <h3 class="font-medium text-primary-black">Low Risk</h3>
+                                <p class="text-sm text-gray-600">No evidence of termite activity or conducive conditions. Regular inspections recommended.</p>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="border rounded-lg p-4 border-yellow-200 bg-yellow-50">
+                        <label class="flex items-start space-x-3">
+                            <input type="radio" name="tiRiskRating" id="tiRiskModerate" class="form-radio mt-1">
+                            <div>
+                                <h3 class="font-medium text-primary-black">Moderate to High Risk</h3>
+                                <p class="text-sm text-gray-600">Some conducive conditions present but no active termite activity detected. Preventive measures recommended.</p>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="border rounded-lg p-4 border-red-200 bg-red-50">
+                        <label class="flex items-start space-x-3">
+                            <input type="radio" name="tiRiskRating" id="tiRiskHigh" class="form-radio mt-1">
+                            <div>
+                                <h3 class="font-medium text-primary-black">High Risk</h3>
+                                <p class="text-sm text-gray-600">Active termite activity or evidence of infestation detected. Immediate treatment required.</p>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="border rounded-lg p-4 border-gray-200">
+                        <label class="flex items-start space-x-3">
+                            <input type="radio" name="tiRiskRating" id="tiRiskNotApplicable" class="form-radio mt-1">
+                            <div>
+                                <h3 class="font-medium text-primary-black">Not Applicable/Unable to Determine</h3>
+                                <p class="text-sm text-gray-600">Inspection limited due to access restrictions or other factors.</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Inspection Notes -->
+            <section class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                <h2 class="section-title">Inspection Notes & Recommendations</h2>
+                <textarea id="tiInspectionNotes" rows="5" class="form-input w-full" placeholder="Record detailed observations, moisture readings, conducive conditions, recommendations for treatment or preventive measures, and next inspection date..."></textarea>
+            </section>
+            
+            <!-- Chemical Treatments (if applicable) -->
+            <section class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                <h2 class="section-title">Chemical Treatments Applied (if any)</h2>
+                <p class="text-sm text-gray-500 mb-4">Record any chemical treatments applied during or following inspection:</p>
+                <div class="table-container">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th class="w-20">#</th>
+                                <th>Trade Name</th>
+                                <th>Active Constituent</th>
+                                <th>Application Method</th>
+                                <th>Location Applied</th>
+                                <th>Rate Used</th>
+                                <th>Amount Used</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="ti-chemical-row">
+                                <td class="text-center">1</td>
+                                <td><input type="text" class="form-input w-full" placeholder="e.g., Termidor HE"></td>
+                                <td><input type="text" class="form-input w-full" placeholder="e.g., Fipronil"></td>
+                                <td><input type="text" class="form-input w-full" placeholder="e.g., Soil Injection"></td>
+                                <td><input type="text" class="form-input w-full" placeholder="e.g., External Perimeter"></td>
+                                <td><input type="text" class="form-input w-full" placeholder="e.g., 2.0 L/10m"></td>
+                                <td><input type="text" class="form-input w-full" placeholder="e.g., 20 L"></td>
+                            </tr>
+                            <tr class="ti-chemical-row">
+                                <td class="text-center">2</td>
+                                <td><input type="text" class="form-input w-full" placeholder="e.g., Termidor HE"></td>
+                                <td><input type="text" class="form-input w-full" placeholder="e.g., Fipronil"></td>
+                                <td><input type="text" class="form-input w-full" placeholder="e.g., Soil Injection"></td>
+                                <td><input type="text" class="form-input w-full" placeholder="e.g., External Perimeter"></td>
+                                <td><input type="text" class="form-input w-full" placeholder="e.g., 2.0 L/10m"></td>
+                                <td><input type="text" class="form-input w-full" placeholder="e.g., 20 L"></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="mt-3 flex items-center space-x-2">
+                    <button type="button" id="tiAddChemicalRow" class="btn-secondary">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"/>
+                        </svg>
+                        Add Treatment
+                    </button>
+                </div>
+            </section>
+            
+            <!-- Form Actions -->
+            <div class="flex flex-col sm:flex-row sm:justify-between space-y-4 sm:space-y-0 sm:space-x-4">
+                <button type="button" id="generatePdfBtn" class="btn-primary w-full sm:w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M4 3a2 2 0 00-2 2v1a1 1 0 001 1h12a1 1 0 001-1V5a2 2 0 00-2-2H4zm0 4a2 2 0 00-2 2v1a1 1 0 001 1h12a1 1 0 001-1v-1a2 2 0 00-2-2H4zm6 6a2 2 0 00-2 2v1a1 1 0 001 1h6a1 1 0 001-1v-1a2 2 0 00-2-2h-2zm0 4a2 2 0 00-2 2v1a1 1 0 001 1h6a1 1 0 001-1v-1a2 2 0 00-2-2h-2z"/>
+                    </svg>
+                    Generate Official Branded PDF
+                </button>
+                
+                <button type="button" id="copyCrmBtn" class="btn-secondary w-full sm:w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M8 4a4 4 0 110 8 4 4 0 010-8zM2 8a6 6 0 1110.89 3.476l1.342 1.22a1 1 0 001.42-1.42l-1.22-1.342A6.006 6.006 0 012 8zm10 6a2 2 0 100-4 2 2 0 000 4z"/>
+                    </svg>
+                    Copy CRM Row
+                </button>
+                
+                <button type="reset" class="btn-secondary w-full sm:w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2a2 2 0 012-2h2a2 2 0 002-2V6a2 2 0 00-2-2H4zM16 4a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 012 2v2a2 2 0 01-2 2h-1a2 2 0 00-2-2v-2a2 2 0 002-2h2a2 2 0 012-2v-2a2 2 0 00-2-2h-2a2 2 0 01-2-2h2z" clip-rule="evenodd"/>
+                    </svg>
+                    Reset Form
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Get the jsPDF constructor
+        const { jsPDF } = window.jspdf;
+
+        let currentReportType = 'gp'; // Default to General Pest
+
+        // Tab switching functionality
+        document.getElementById('gpBtn').addEventListener('click', function() {
+            currentReportType = 'gp';
+            document.getElementById('gpBtn').classList.add('bg-primary-black', 'text-white');
+            document.getElementById('gpBtn').classList.remove('bg-white', 'text-primary-black', 'border', 'border-primary-black');
+            document.getElementById('tiBtn').classList.remove('bg-primary-black', 'text-white');
+            document.getElementById('tiBtn').classList.add('bg-white', 'text-primary-black', 'border', 'border-primary-black');
+            document.getElementById('gpForm').classList.remove('hidden');
+            document.getElementById('tiForm').classList.add('hidden');
+        });
+
+        document.getElementById('tiBtn').addEventListener('click', function() {
+            currentReportType = 'ti';
+            document.getElementById('tiBtn').classList.add('bg-primary-black', 'text-white');
+            document.getElementById('tiBtn').classList.remove('bg-white', 'text-primary-black', 'border', 'border-primary-black');
+            document.getElementById('gpBtn').classList.remove('bg-primary-black', 'text-white');
+            document.getElementById('gpBtn').classList.add('bg-white', 'text-primary-black', 'border', 'border-primary-black');
+            document.getElementById('tiForm').classList.remove('hidden');
+            document.getElementById('gpForm').classList.add('hidden');
+        });
+
+        // Add chemical row functionality for General Pest
+        document.getElementById('addChemicalRow').addEventListener('click', function() {
+            const tbody = document.querySelector('.gp-chemical-row').parentNode;
+            const lastRow = tbody.querySelector('.gp-chemical-row:last-child');
+            const newRow = lastRow.cloneNode(true);
+            
+            // Clear input values
+            const inputs = newRow.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.value = '';
+            });
+            
+            // Update row number
+            const rowNumberCell = newRow.querySelector('td:first-child');
+            const rowNumber = parseInt(rowNumberCell.textContent) + 1;
+            rowNumberCell.textContent = rowNumber;
+            
+            tbody.appendChild(newRow);
+        });
+
+        // Add chemical row functionality for Termite Inspection
+        document.getElementById('tiAddChemicalRow').addEventListener('click', function() {
+            const tbody = document.querySelector('.ti-chemical-row').parentNode;
+            const lastRow = tbody.querySelector('.ti-chemical-row:last-child');
+            const newRow = lastRow.cloneNode(true);
+            
+            // Clear input values
+            const inputs = newRow.querySelectorAll('input');
+            inputs.forEach(input => {
+                input.value = '';
+            });
+            
+            // Update row number
+            const rowNumberCell = newRow.querySelector('td:first-child');
+            const rowNumber = parseInt(rowNumberCell.textContent) + 1;
+            rowNumberCell.textContent = rowNumber;
+            
+            tbody.appendChild(newRow);
+        });
+
+        // Generate PDF functionality
+        document.getElementById('generatePdfBtn').addEventListener('click', function() {
+            const { jsPDF } = window.jspdf;
+            const doc = new jsPDF();
+            
+            // Add logo
+            const imgUrl = '../logo-no-background.png';
+            const imgProps = doc.getImageProperties(imgUrl);
+            const pdfWidth = doc.internal.pageSize.getWidth();
+            const imgWidth = 40;
+            const imgHeight = (imgWidth * imgProps.height) / imgProps.width;
+            const imgX = (pdfWidth - imgWidth) / 2;
+            
+            doc.addImage(imgUrl, 'PNG', imgX, 10, imgWidth, imgHeight);
+            
+            // Set font and title
+            doc.setFontSize(16);
+            doc.setTextColor(0, 0, 0);
+            doc.text('COFFS COAST PEST CONTROL', pdfWidth / 2, 30, { align: 'center' });
+            
+            let startY = 40;
+            
+            if (currentReportType === 'gp') {
+                startY = generateGPReport(doc, startY, pdfWidth);
+            } else {
+                startY = generateTIReport(doc, startY, pdfWidth);
+            }
+            
+            // Save the PDF
+            const timestamp = new Date().toISOString().slice(0,19).replace(/[:T]/g, '-');
+            doc.save(`CCPC_Report_${currentReportType.toUpperCase()}_${timestamp}.pdf`);
+        });
+
+        function generateGPReport(doc, startY, pageWidth) {
+            let y = startY;
+            
+            // Report title
+            doc.setFontSize(14);
+            doc.text('GENERAL PEST TREATMENT REPORT', pageWidth / 2, y, { align: 'center' });
+            y += 10;
+            
+            // Client Info Section
+            doc.setFontSize(12);
+            doc.text('CLIENT INFORMATION', 15, y);
+            y += 7;
+            doc.setFontSize(10);
+            
+            const clientName = document.getElementById('clientName').value || '';
+            const propertyAddress = document.getElementById('propertyAddress').value || '';
+            const serviceDate = document.getElementById('serviceDate').value || '';
+            const contactPhone = document.getElementById('contactPhone').value || '';
+            const email = document.getElementById('email').value || '';
+            const propertyDescription = document.getElementById('propertyDescription').value || '';
+            
+            doc.text(`Client Name: ${clientName}`, 15, y); y += 6;
+            doc.text(`Property Address: ${propertyAddress}`, 15, y); y += 6;
+            doc.text(`Service Date: ${serviceDate}`, 15, y); y += 6;
+            doc.text(`Contact Phone: ${contactPhone}`, 15, y); y += 6;
+            doc.text(`Email: ${email}`, 15, y); y += 6;
+            doc.text(`Property Description: ${propertyDescription}`, 15, y); y += 10;
+            
+            // Pest Selection
+            doc.text('PESTS OBSERVED/TREATED', 15, y); y += 6;
+            const pests = [];
+            const pestCheckboxes = [
+                { id: 'pestAnts', label: 'Ants' },
+                { id: 'pestSpiders', label: 'Spiders' },
+                { id: 'pestCockroaches', label: 'Cockroaches' },
+                { id: 'pestSilverfish', label: 'Silverfish' },
+                { id: 'pestRodents', label: 'Rodents' },
+                { id: 'pestTermites', label: 'Termites' },
+                { id: 'pestWasps', label: 'Wasps/Bees' },
+                { id: 'pestFleas', label: 'Fleas/Ticks' },
+                { id: 'pestBedBugs', label: 'Bed Bugs' }
+            ];
+            
+            pestCheckboxes.forEach(box => {
+                if (document.getElementById(box.id).checked) {
+                    pests.push(document.querySelector(`label[for="${box.id}"]`).textContent.trim());
+                }
+            });
+            
+            const otherPest = document.getElementById('pestOther').checked ? 
+                `Other: ${document.getElementById('pestOtherSpecify').value}` : '';
+            
+            if (otherPest) pests.push(otherPest);
+            
+            doc.text(pests.length > 0 ? pests.join(', ') : 'None specified', 15, y); y += 8;
+            
+            // Application Methods
+            doc.text('APPLICATION METHODS USED', 15, y); y += 6;
+            const methods = [];
+            const methodCheckboxes = [
+                { id: 'methodSpray', label: 'Spray' },
+                { id: 'methodDust', label: 'Dust' },
+                { id: 'methodBait', label: 'Bait' },
+                { id: 'methodGel', label: 'Gel' },
+                { id: 'methodGranules', label: 'Granules' }
+            ];
+            
+            methodCheckboxes.forEach(box => {
+                if (document.getElementById(box.id).checked) {
+                    methods.push(document.querySelector(`label[for="${box.id}"]`).textContent.trim().replace(/:$/, ''));
+                }
+            });
+            
+            doc.text(methods.length > 0 ? methods.join(', ') : 'None specified', 15, y); y += 8;
+            
+            // Treatment Notes
+            doc.text('TREATMENT NOTES', 15, y); y += 6;
+            const treatmentNotes = document.getElementById('treatmentNotes').value || 'No additional notes';
+            doc.text(treatmentNotes, 15, y); y += 6;
+            
+            // Chemical Compliance Table
+            doc.text('CHEMICAL APPLICATION DETAILS (AS PER LABEL)', 15, y); y += 6;
+            
+            // Table headers
+            const headers = ['#', 'Trade Name', 'Active Constituent', 'Rate Used', 'Amount Used', 'Batch Number', 'Re-Entry Precautions'];
+            const startX = 15;
+            const colWidths = [10, 35, 35, 20, 20, 20, 20];
+            let x = startX;
+            
+            doc.setFontSize(9);
+            doc.setFillColor(230, 230, 230);
+            
+            headers.forEach((header, i) => {
+                doc.rect(x, y, colWidths[i], 7, 'F');
+                doc.text(header, x + 2, y + 5);
+                x += colWidths[i];
+            });
+            
+            y += 7;
+            
+            // Table rows
+            const chemicalRows = document.querySelectorAll('.gp-chemical-row');
+            chemicalRows.forEach((row, index) => {
+                // Check if we need a new page
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
+                x = startX;
+                const inputs = row.querySelectorAll('input');
+                inputs.forEach((input, i) => {
+                    doc.rect(x, y, colWidths[i], 6);
+                    const value = input.value || '';
+                    doc.text(value.substring(0, 15), x + 2, y + 4); // Truncate long text
+                    x += colWidths[i];
+                });
+                
+                y += 6;
+            });
+            
+            return y;
+        }
+
+        function generateTIReport(doc, startY, pageWidth) {
+            let y = startY;
+            
+            // Report title
+            doc.setFontSize(14);
+            doc.text('TERMITE INSPECTION REPORT (AS 3660.2 COMPLIANT)', pageWidth / 2, y, { align: 'center' });
+            y += 10;
+            
+            // Client Info Section
+            doc.setFontSize(12);
+            doc.text('CLIENT & PROPERTY INFORMATION', 15, y);
+            y += 7;
+            doc.setFontSize(10);
+            
+            const clientName = document.getElementById('tiClientName').value || '';
+            const propertyAddress = document.getElementById('tiPropertyAddress').value || '';
+            const serviceDate = document.getElementById('tiServiceDate').value || '';
+            const contactPhone = document.getElementById('tiContactPhone').value || '';
+            const email = document.getElementById('tiEmail').value || '';
+            
+            doc.text(`Client Name: ${clientName}`, 15, y); y += 6;
+            doc.text(`Property Address: ${propertyAddress}`, 15, y); y += 6;
+            doc.text(`Service Date: ${serviceDate}`, 15, y); y += 6;
+            doc.text(`Contact Phone: ${contactPhone}`, 15, y); y += 6;
+            doc.text(`Email: ${email}`, 15, y); y += 10;
+            
+            // Building Construction
+            doc.text('BUILDING CONSTRUCTION DETAILS', 15, y); y += 6;
+            const storeys = document.getElementById('tiStoreys').value || '';
+            const wallType = document.getElementById('tiWallType').value || '';
+            const floorType = document.getElementById('tiFloorType').value || '';
+            const roofType = document.getElementById('tiRoofType').value || '';
+            const foundationType = document.getElementById('tiFoundation').value || '';
+            const constructionNotes = document.getElementById('tiConstructionNotes').value || '';
+            
+            doc.text(`Storeys: ${storeys}`, 15, y); y += 5;
+            doc.text(`Wall Type: ${wallType}`, 15, y); y += 5;
+            doc.text(`Floor Type: ${floorType}`, 15, y); y += 5;
+            doc.text(`Roof Type: ${roofType}`, 15, y); y += 5;
+            doc.text(`Foundation: ${foundationType}`, 15, y); y += 5;
+            if (constructionNotes) {
+                doc.text(`Construction Notes: ${constructionNotes}`, 15, y); y += 5;
+            }
+            y += 5;
+            
+            // Areas Inspected
+            doc.text('AREAS INSPECTED', 15, y); y += 6;
+            const inspectedAreas = [];
+            const areaCheckboxes = [
+                { id: 'tiAreaInterior', label: 'Interior' },
+                { id: 'tiAreaRoofVoid', label: 'Roof Void' },
+                { id: 'tiAreaSubfloor', label: 'Subfloor' },
+                { id: 'tiAreaExterior', label: 'Exterior (within 50m)' },
+                { id: 'tiAreaGarage', label: 'Garage/Carport' },
+                { id: 'tiAreaFences', label: 'Fences & Stumps (within 50m)' },
+                { id: 'tiAreaTrees', label: 'Trees & Landscaping (within 50m)' },
+                { id: 'tiAreaRetainingWalls', label: 'Retaining Walls' },
+                { id: 'tiAreaSubtermite', label: 'Subtermite Shields' }
+            ];
+            
+            areaCheckboxes.forEach(box => {
+                if (document.getElementById(box.id).checked) {
+                    inspectedAreas.push(document.querySelector(`label[for="${box.id}"]`).textContent.trim());
+                }
+            });
+            
+            const otherArea = document.getElementById('tiAreaOther').checked ? 
+                `Other: ${document.getElementById('tiAreaOtherSpecify').value}` : '';
+            
+            if (otherArea) inspectedAreas.push(otherArea);
+            
+            doc.text(inspectedAreas.length > 0 ? inspectedAreas.join(', ') : 'None specified', 15, y); y += 8;
+            
+            // Termite Risk Rating
+            doc.text('SUBTERRANEAN TERMITE RISK ASSESSMENT', 15, y); y += 6;
+            const riskRadios = document.getElementsByName('tiRiskRating');
+            let selectedRisk = 'Not specified';
+            riskRadios.forEach(radio => {
+                if (radio.checked) {
+                    selectedRisk = radio.nextElementSibling.querySelector('h3').textContent;
+                }
+            });
+            doc.text(`Risk Rating: ${selectedRisk}`, 15, y); y += 8;
+            
+            // Inspection Notes
+            doc.text('INSPECTION OBSERVATIONS & RECOMMENDATIONS', 15, y); y += 6;
+            const inspectionNotes = document.getElementById('tiInspectionNotes').value || 'No additional observations';
+            doc.text(inspectionNotes, 15, y); y += 6;
+            
+            // Chemical Treatments (if any)
+            doc.text('CHEMICAL TREATMENTS APPLIED (IF ANY)', 15, y); y += 6;
+            
+            // Table headers
+            const headers = ['#', 'Trade Name', 'Active Constituent', 'Application Method', 'Location Applied', 'Rate Used', 'Amount Used'];
+            const startX = 15;
+            const colWidths = [10, 28, 28, 28, 18, 16, 16];
+            let x = startX;
+            
+            doc.setFontSize(9);
+            doc.setFillColor(230, 230, 230);
+            
+            headers.forEach((header, i) => {
+                doc.rect(x, y, colWidths[i], 6, 'F');
+                doc.text(header, x + 2, y + 4);
+                x += colWidths[i];
+            });
+            
+            y += 6;
+            
+            // Table rows
+            const chemicalRows = document.querySelectorAll('.ti-chemical-row');
+            chemicalRows.forEach((row, index) => {
+                // Check if we need a new page
+                if (y > 270) {
+                    doc.addPage();
+                    y = 20;
+                }
+                
+                x = startX;
+                const inputs = row.querySelectorAll('input');
+                inputs.forEach((input, i) => {
+                    doc.rect(x, y, colWidths[i], 5);
+                    const value = input.value || '';
+                    doc.text(value.substring(0, 12), x + 2, y + 3); // Truncate long text
+                    x += colWidths[i];
+                });
+                
+                y += 5;
+            });
+            
+            return y;
+        }
+
+        // Copy CRM Row functionality
+        document.getElementById('copyCrmBtn').addEventListener('click', function() {
+            let clientName, propertyAddress, serviceDate, reportType, nextDueDate;
+            
+            if (currentReportType === 'gp') {
+                clientName = document.getElementById('clientName').value;
+                propertyAddress = document.getElementById('propertyAddress').value;
+                serviceDate = document.getElementById('serviceDate').value;
+                reportType = 'General Pest Treatment';
+            } else {
+                clientName = document.getElementById('tiClientName').value;
+                propertyAddress = document.getElementById('tiPropertyAddress').value;
+                serviceDate = document.getElementById('tiServiceDate').value;
+                reportType = 'Termite Inspection (AS 3660.2)';
+            }
+            
+            // Calculate next routine due date (12 months from service date)
+            let nextDueDate = 'Not specified';
+            if (serviceDate) {
+                const date = new Date(serviceDate);
+                date.setFullYear(date.getFullYear() + 1);
+                nextDueDate = date.toISOString().split('T')[0]; // YYYY-MM-DD format
+            }
+            
+            // Format as CSV for easy pasting into Excel/Google Sheets
+            const csvRow = `"${clientName.replace(/"/g, '""')}", "${propertyAddress.replace(/"/g, '""')}", "${serviceDate}", "${reportType}", "${nextDueDate}"`;
+            
+            // Copy to clipboard
+            navigator.clipboard.writeText(csvRow).then(() => {
+                // Show temporary success message
+                const btn = document.getElementById('copyCrmBtn');
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg> Copied!';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                }, 2000);
+            }).catch(err => {
+                console.error('Failed to copy: ', err);
+                alert('Failed to copy to clipboard. Please try again.');
+            });
+        });
+
+        // Initialize form states
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set today's date as default for service date fields
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('serviceDate').value = today;
+            document.getElementById('tiServiceDate').value = today;
+            
+            // Hide termite form initially
+            document.getElementById('tiForm').classList.add('hidden');
+        });
+    </script>
+</body>
+</html>

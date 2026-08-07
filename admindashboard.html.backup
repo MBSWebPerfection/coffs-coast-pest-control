@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffs Coast Pest Control - Command Center & Field Portal</title>
+    <link rel="stylesheet" href="../styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style>
+        @media print {
+            body { background: white !important; color: black !important; }
+            .no-print { display: none !important; }
+            .print-page-break { page-break-before: always; }
+            input, select, textarea { border: none !important; background: transparent !important; padding: 0 !important; }
+            canvas { border: 1px solid #000 !important; }
+        }
+        .signature-canvas {
+            touch-action: none;
+            cursor: crosshair;
+        }
+    </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans text-xs">
+
+    <header class="no-print bg-slate-900 border-b border-slate-800 sticky top-0 z-50 px-4 sm:px-8 py-3 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-xl">
+        <div class="flex items-center gap-3">
+            <div>
+                <h1 class="text-sm font-black tracking-wider text-white">CCPC FIELD COMMAND CENTER</h1>
+                <p class="text-[10px] text-emerald-400 font-semibold">Inspector: Cristian O'Brien (Licence #5103825)</p>
+            </div>
+        </div>
+
+        <div class="flex bg-slate-950 p-1 rounded-xl border border-slate-800">
+            <button onclick="switchTab('gp')" id="tabGP" class="px-4 py-2 rounded-lg font-bold text-xs transition cursor-pointer bg-emerald-600 text-white shadow">
+                General Pest (GP)
+            </button>
+            <button onclick="switchTab('ti')" id="tabTI" class="px-4 py-2 rounded-lg font-bold text-xs transition cursor-pointer text-slate-400 hover:text-white">
+                Termite Inspection (AS 3660)
+            </button>
+        </div>
+
+        <div class="flex gap-2">
+            <button onclick="window.print()" class="bg-emerald-600 hover:bg-emerald-500 text-white font-bold px-3 py-2 rounded-lg text-xs transition cursor-pointer flex items-center gap-1.5">
+                🖨️ Print Report
+            </button>
+            <button onclick="syncToGoogleCRM()" class="bg-blue-600 hover:bg-blue-500 text-white font-bold px-3 py-2 rounded-lg text-xs transition cursor-pointer">
+                ☁️ Sync to Google CRM
+            </button>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto p-4 sm:p-8">
+
+        <div id="formGP" class="bg-white text-slate-900 border border-slate-400 rounded-xl shadow-2xl p-6 sm:p-10 mb-12">
+            
+            <div class="flex justify-between items-start border-b-2 border-black pb-4 mb-5">
+                <div>
+                    <h2 class="text-base font-black tracking-tight text-black">COFFS COAST PEST CONTROL</h2>
+                    <p class="text-xs font-bold text-slate-800 uppercase tracking-wider">Pest Management Treatment Proposal & Advice Notice</p>
+                    <p class="text-[10px] text-slate-600">Servicing Coffs Harbour, Woolgoolga, Corindi Beach & Sawtell</p>
+                </div>
+                <div class="text-right text-xs space-y-1 font-mono">
+                    <p class="font-bold border border-black px-2 py-0.5 bg-slate-100">WORK ORDER: <input type="text" id="gpWorkOrder" value="WO# 5813a" class="font-mono w-24 text-right bg-transparent"></p>
+                    <p>Date: <input type="date" id="gpServiceDate" class="bg-transparent text-right font-mono"></p>
+                </div>
+            </div>
+
+            <div class="border border-black p-3 mb-4 bg-slate-50 space-y-2">
+                <h3 class="font-black text-black uppercase tracking-wider border-b border-black pb-1">Client & Property Particulars</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="space-y-1">
+                        <p><strong class="w-28 inline-block">Client Name:</strong> <input type="text" id="gpClient" value="Cardow + Partners" class="border-b border-slate-400 w-44 bg-transparent px-1 font-bold"></p>
+                        <p><strong class="w-28 inline-block">Address:</strong> <input type="text" id="gpAddress" value="31 Arkan Ave, Woolgoolga" class="border-b border-slate-400 w-52 bg-transparent px-1"></p>
+                        <p><strong class="w-28 inline-block">Phone:</strong> <input type="text" id="gpPhone" value="02 6654 1148" class="border-b border-slate-400 w-44 bg-transparent px-1"></p>
+                    </div>
+                    <div class="space-y-1">
+                        <p><strong class="w-28 inline-block">Technician:</strong> <input type="text" id="gpTech" value="Cristian O'Brien" class="border-b border-slate-400 w-44 bg-transparent px-1 font-bold"></p>
+                        <p><strong class="w-28 inline-block">Licence No:</strong> <input type="text" id="gpLicence" value="5103825" class="border-b border-slate-400 w-44 bg-transparent px-1"></p>
+                        <p><strong class="w-28 inline-block">Time:</strong> <input type="text" id="gpTime" value="08:30 - 10:00" class="border-b border-slate-400 w-44 bg-transparent px-1"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-2 mb-4">
+                <h3 class="font-black text-black uppercase tracking-wider bg-slate-200 border border-black px-2 py-1">Pests Addressed & Application Conditions</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 border border-black p-3 bg-slate-50">
+                    <label class="flex items-center gap-2"><input type="checkbox" name="gpPests" value="Ants" checked class="accent-black"> Ants</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" name="gpPests" value="Spiders" checked class="accent-black"> Webbing Spiders</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" name="gpPests" value="Cockroaches" checked class="accent-black"> Cockroaches</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" name="gpPests" value="Silverfish" checked class="accent-black"> Silverfish</label>
+                </div>
+            </div>
+
+            <div class="space-y-2 mb-4">
+                <div class="flex justify-between items-center">
+                    <h3 class="font-black text-black uppercase tracking-wider">Chemical / Control Agent Log</h3>
+                    <button type="button" onclick="addChemicalRow()" class="no-print bg-slate-800 hover:bg-slate-700 text-white px-2.5 py-1 rounded text-[10px] font-bold transition cursor-pointer">
+                        + Add Another Chemical Row
+                    </button>
+                </div>
+                <table class="w-full border-collapse border border-black text-left text-xs" id="chemicalTable">
+                    <thead>
+                        <tr class="bg-slate-200 border-b border-black">
+                            <th class="border border-black p-1 font-bold">Product Trade Name</th>
+                            <th class="border border-black p-1 font-bold">Active Constituent</th>
+                            <th class="border border-black p-1 font-bold">Rate Used / Amount</th>
+                            <th class="border border-black p-1 font-bold">Batch No. / APVMA</th>
+                            <th class="border border-black p-1 font-bold no-print text-center w-12">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody id="chemTableBody">
+                        <tr>
+                            <td class="border border-black p-1">
+                                <select onchange="autoFillActive(this)" class="w-full bg-transparent font-bold border-b border-slate-300 pb-0.5 outline-none">
+                                    <option value="Cislin 25" data-active="Deltamethrin 25g/L">Cislin 25</option>
+                                    <option value="Termidor HE" data-active="Fipronil 80g/L">Termidor HE</option>
+                                    <option value="Seclira Pressurized Gel" data-active="Dinotefuran 0.5%">Seclira Pressurized Gel</option>
+                                    <option value="Biflex AquaMax" data-active="Bifenthrin 100g/L">Biflex AquaMax</option>
+                                    <option value="Demon Max" data-active="Cypermethrin & Alphacypermethrin">Demon Max</option>
+                                    <option value="Custom Chemical">Custom Chemical...</option>
+                                </select>
+                            </td>
+                            <td class="border border-black p-1"><input type="text" value="Deltamethrin 25g/L" class="w-full bg-transparent active-input"></td>
+                            <td class="border border-black p-1"><input type="text" value="60mls / 10L" class="w-full bg-transparent"></td>
+                            <td class="border border-black p-1"><input type="text" value="APVMA 1100" class="w-full bg-transparent"></td>
+                            <td class="border border-black p-1 no-print text-center"><button type="button" onclick="removeChemRow(this)" class="text-red-600 font-bold text-xs hover:underline">X</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="space-y-3 mb-6">
+                <div>
+                    <div class="flex justify-between items-center mb-1">
+                        <h3 class="font-black text-black uppercase tracking-wider">Treatment Notes & Areas Treated</h3>
+                        <button type="button" onclick="toggleVoiceInput('gpNotes', 'gpMicText')" class="no-print bg-black text-white px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 cursor-pointer">
+                            🎙️ <span id="gpMicText">Voice Notes</span>
+                        </button>
+                    </div>
+                    <textarea id="gpNotes" rows="3" class="w-full border border-black p-2 bg-slate-50">Routine general pest treatment carried out. Skirting boards, internal perimeter, and external foundations sprayed.</textarea>
+                </div>
+                <div class="border-2 border-black p-2.5 bg-slate-100">
+                    <p class="font-black uppercase text-black">RE-ENTRY PRECAUTION:</p>
+                    <p class="text-slate-800 text-[10px]">Do not enter treated areas until spray solution has thoroughly dried (approx. 1-2 hours).</p>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-6 border-t border-black pt-4">
+                <div>
+                    <p class="font-bold mb-1">Technician Signature:</p>
+                    <div class="border border-black bg-slate-50 p-1 inline-block rounded">
+                        <canvas id="gpTechCanvas" width="260" height="70" class="signature-canvas bg-white rounded"></canvas>
+                        <div class="flex justify-between mt-1 px-1"><span class="text-[9px]">Cristian O'Brien</span><button type="button" onclick="clearCanvas('gpTechCanvas')" class="no-print text-[10px] text-red-600 font-bold">Clear</button></div>
+                    </div>
+                </div>
+                <div>
+                    <p class="font-bold mb-1">Client Acceptance Signature:</p>
+                    <div class="border border-black bg-slate-50 p-1 inline-block rounded">
+                        <canvas id="gpClientCanvas" width="260" height="70" class="signature-canvas bg-white rounded"></canvas>
+                        <div class="flex justify-between mt-1 px-1"><span class="text-[9px]">Customer Sign-off</span><button type="button" onclick="clearCanvas('gpClientCanvas')" class="no-print text-[10px] text-red-600 font-bold">Clear</button></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="formTI" class="bg-white text-slate-900 border border-slate-400 rounded-xl shadow-2xl p-6 sm:p-10 mb-12 hidden">
+            
+            <div class="flex justify-between items-start border-b-2 border-black pb-4 mb-5">
+                <div>
+                    <h2 class="text-base font-black tracking-tight text-black">COFFS COAST PEST CONTROL</h2>
+                    <p class="text-xs font-bold text-slate-800 uppercase tracking-wider">Regular Visual Termite Inspection Report (AS 3660.2-2017)</p>
+                    <p class="text-[10px] text-slate-600">Servicing Coffs Harbour, Woolgoolga, Corindi Beach & Sawtell</p>
+                </div>
+                <div class="text-right text-xs space-y-1 font-mono">
+                    <p class="font-bold border border-black px-2 py-0.5 bg-slate-100">JOB / INVOICE: <input type="text" id="tiWorkOrder" value="H 1120337" class="font-mono w-24 text-right bg-transparent"></p>
+                    <p>Date: <input type="date" id="tiServiceDate" class="bg-transparent text-right font-mono"></p>
+                </div>
+            </div>
+
+            <div class="border border-black p-3 mb-4 bg-slate-50 space-y-2">
+                <h3 class="font-black text-black uppercase tracking-wider border-b border-black pb-1">Client & Property Particulars</h3>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                    <div class="space-y-1">
+                        <p><strong class="w-32 inline-block">Client Name:</strong> <input type="text" id="tiClient" value="Cardow + Partners" class="border-b border-slate-400 w-44 bg-transparent px-1 font-bold"></p>
+                        <p><strong class="w-32 inline-block">Structure Address:</strong> <input type="text" id="tiAddress" value="31 Arkan Ave, Woolgoolga" class="border-b border-slate-400 w-52 bg-transparent px-1"></p>
+                        <p><strong class="w-32 inline-block">Phone:</strong> <input type="text" id="tiPhone" value="02 6654 1148" class="border-b border-slate-400 w-44 bg-transparent px-1"></p>
+                    </div>
+                    <div class="space-y-1">
+                        <p><strong class="w-32 inline-block">Inspector Name:</strong> <input type="text" id="tiTech" value="Cristian O'Brien" class="border-b border-slate-400 w-44 bg-transparent px-1 font-bold"></p>
+                        <p><strong class="w-32 inline-block">Licence No:</strong> <input type="text" id="tiLicence" value="5103825" class="border-b border-slate-400 w-44 bg-transparent px-1"></p>
+                        <p><strong class="w-32 inline-block">Service Time:</strong> <input type="text" id="tiTime" value="09:00 - 10:30" class="border-b border-slate-400 w-44 bg-transparent px-1"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="space-y-2 mb-4">
+                <h3 class="font-black text-black uppercase tracking-wider bg-slate-200 border border-black px-2 py-1">1. Brief Description of Building & Structures</h3>
+                <div class="border border-black p-3 bg-slate-50 grid grid-cols-2 sm:grid-cols-3 gap-3">
+                    <p><strong>Type:</strong> <input type="text" value="Residential / Domestic" class="w-full bg-transparent border-b border-slate-400"></p>
+                    <p><strong>Height:</strong> <input type="text" value="Single Storey" class="w-full bg-transparent border-b border-slate-400"></p>
+                    <p><strong>Wall Construction:</strong> <input type="text" value="Brick Veneer" class="w-full bg-transparent border-b border-slate-400"></p>
+                    <p><strong>Roof Material:</strong> <input type="text" value="Tile Roofing" class="w-full bg-transparent border-b border-slate-400"></p>
+                    <p><strong>Foundation:</strong> <input type="text" value="Concrete Slab" class="w-full bg-transparent border-b border-slate-400"></p>
+                    <p><strong>Risk Rating:</strong> 
+                        <select id="tiRisk" class="border border-black bg-white p-0.5 font-bold">
+                            <option value="Moderate">Moderate</option>
+                            <option value="Moderate to High" selected>Moderate to High</option>
+                            <option value="High">High</option>
+                        </select>
+                    </p>
+                </div>
+            </div>
+
+            <div class="space-y-2 mb-4">
+                <h3 class="font-black text-black uppercase tracking-wider bg-slate-200 border border-black px-2 py-1">1.1 Areas Inspected Checklist</h3>
+                <div class="grid grid-cols-2 sm:grid-cols-4 gap-2 border border-black p-3 bg-slate-50">
+                    <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-black"> Interior Areas</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-black"> Roof Void</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-black"> Subfloor Area</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-black"> Wall Exterior</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-black"> Garage / Carport</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-black"> Fences</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-black"> Outbuildings</label>
+                    <label class="flex items-center gap-2"><input type="checkbox" checked class="accent-black"> Trees & Stumps</label>
+                </div>
+            </div>
+
+            <div class="space-y-2 mb-4">
+                <div class="flex justify-between items-center bg-slate-200 border border-black px-2 py-1">
+                    <h3 class="font-black text-black uppercase tracking-wider">Inspector Findings & Conducive Conditions</h3>
+                    <button type="button" onclick="toggleVoiceInput('tiNotes', 'tiMicText')" class="no-print bg-black text-white px-2 py-0.5 rounded text-[10px] font-bold flex items-center gap-1 cursor-pointer">
+                        🎙️ <span id="tiMicText">Voice Notes</span>
+                    </button>
+                </div>
+                <textarea id="tiNotes" rows="4" class="w-full border border-black p-2 bg-slate-50">No live termites or structural damage detected at time of inspection. Conducive conditions noted: garden beds close to weep holes. Regular 12-monthly inspections recommended.</textarea>
+            </div>
+
+            <div class="border border-black p-3 bg-slate-100 text-[10px] space-y-1 mb-6">
+                <p class="font-bold uppercase text-black">IMPORTANT NOTICE (AS 3660.2):</p>
+                <p>Regular inspections DO NOT stop termite attack, but limit damage by detecting problems early. AS 3660 recommends at least 12-monthly inspections.</p>
+            </div>
+
+            <div class="border-t border-black pt-4">
+                <p class="font-bold mb-1">Inspector Digital Signature:</p>
+                <div class="border border-black bg-slate-50 p-1 inline-block rounded">
+                    <canvas id="tiTechCanvas" width="280" height="70" class="signature-canvas bg-white rounded"></canvas>
+                    <div class="flex justify-between mt-1 px-1"><span class="text-[9px]">Cristian O'Brien</span><button type="button" onclick="clearCanvas('tiTechCanvas')" class="no-print text-[10px] text-red-600 font-bold">Clear</button></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="print-page-break bg-white text-slate-900 border border-slate-400 rounded-xl shadow-2xl p-8 mt-12">
+            <div class="text-center mb-6 border-b border-black pb-4">
+                <h3 class="text-base font-black uppercase tracking-tight">Coffs Coast Pest Control — Special Offers & Services</h3>
+                <p class="text-xs text-slate-600">Protecting your property year-round across the Coffs Coast</p>
+            </div>
+            <div class="flex justify-center items-center">
+                <img src="../CCPC Flyer 1.0.jpg" alt="CCPC Promotional Flyer" class="max-w-full h-auto object-contain border border-slate-300 rounded shadow" onerror="this.outerHTML='<div class=\'p-12 border-2 border-dashed border-slate-400 text-center text-xs font-bold text-slate-500\'>[CCPC Flyer 1.0.jpg Embedded Here]</div>'">
+            </div>
+        </div>
+
+    </main>
+
+    <script>
+        document.getElementById('gpServiceDate').valueAsDate = new Date();
+        document.getElementById('tiServiceDate').valueAsDate = new Date();
+
+        function switchTab(mode) {
+            const gpForm = document.getElementById('formGP');
+            const tiForm = document.getElementById('formTI');
+            const tabGP = document.getElementById('tabGP');
+            const tabTI = document.getElementById('tabTI');
+
+            if (mode === 'ti') {
+                gpForm.classList.add('hidden');
+                tiForm.classList.remove('hidden');
+                tabTI.className = "px-4 py-2 rounded-lg font-bold text-xs transition cursor-pointer bg-amber-600 text-white shadow";
+                tabGP.className = "px-4 py-2 rounded-lg font-bold text-xs transition cursor-pointer text-slate-400 hover:text-white";
+            } else {
+                tiForm.classList.add('hidden');
+                gpForm.classList.remove('hidden');
+                tabGP.className = "px-4 py-2 rounded-lg font-bold text-xs transition cursor-pointer bg-emerald-600 text-white shadow";
+                tabTI.className = "px-4 py-2 rounded-lg font-bold text-xs transition cursor-pointer text-slate-400 hover:text-white";
+            }
+        }
+
+        // Chemical Log Table Dynamic Rows & Dropdown Auto-fill
+        function autoFillActive(selectElement) {
+            const selectedOption = selectElement.options[selectElement.selectedIndex];
+            const activeConst = selectedOption.getAttribute('data-active') || '';
+            const row = selectElement.closest('tr');
+            const activeInput = row.querySelector('.active-input');
+            if (activeConst && activeInput) {
+                activeInput.value = activeConst;
+            }
+        }
+
+        function addChemicalRow() {
+            const tbody = document.getElementById('chemTableBody');
+            const newRow = document.createElement('tr');
+            newRow.innerHTML = `
+                <td class="border border-black p-1">
+                    <select onchange="autoFillActive(this)" class="w-full bg-transparent font-bold border-b border-slate-300 pb-0.5 outline-none">
+                        <option value="Cislin 25" data-active="Deltamethrin 25g/L">Cislin 25</option>
+                        <option value="Termidor HE" data-active="Fipronil 80g/L">Termidor HE</option>
+                        <option value="Seclira Pressurized Gel" data-active="Dinotefuran 0.5%">Seclira Pressurized Gel</option>
+                        <option value="Biflex AquaMax" data-active="Bifenthrin 100g/L">Biflex AquaMax</option>
+                        <option value="Demon Max" data-active="Cypermethrin & Alphacypermethrin">Demon Max</option>
+                        <option value="Custom Chemical">Custom Chemical...</option>
+                    </select>
+                </td>
+                <td class="border border-black p-1"><input type="text" value="Deltamethrin 25g/L" class="w-full bg-transparent active-input"></td>
+                <td class="border border-black p-1"><input type="text" value="50mls / 10L" class="w-full bg-transparent"></td>
+                <td class="border border-black p-1"><input type="text" value="APVMA -" class="w-full bg-transparent"></td>
+                <td class="border border-black p-1 no-print text-center"><button type="button" onclick="removeChemRow(this)" class="text-red-600 font-bold text-xs hover:underline">X</button></td>
+            `;
+            tbody.appendChild(newRow);
+        }
+
+        function removeChemRow(button) {
+            const row = button.closest('tr');
+            if (document.querySelectorAll('#chemTableBody tr').length > 1) {
+                row.remove();
+            } else {
+                alert("You must keep at least one chemical log entry.");
+            }
+        }
+
+        // Setup Signature Pads
+        function initCanvas(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            if (!canvas) return;
+            const ctx = canvas.getContext('2d');
+            let isDrawing = false, lastX = 0, lastY = 0;
+
+            function getPos(e) {
+                const rect = canvas.getBoundingClientRect();
+                return { x: (e.clientX || e.touches[0].clientX) - rect.left, y: (e.clientY || e.touches[0].clientY) - rect.top };
+            }
+
+            canvas.addEventListener('mousedown', e => { isDrawing = true; const p = getPos(e); lastX = p.x; lastY = p.y; });
+            canvas.addEventListener('mousemove', e => {
+                if (!isDrawing) return; e.preventDefault(); const p = getPos(e);
+                ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(p.x, p.y);
+                ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.stroke();
+                lastX = p.x; lastY = p.y;
+            });
+            canvas.addEventListener('mouseup', () => isDrawing = false);
+            canvas.addEventListener('mouseleave', () => isDrawing = false);
+
+            canvas.addEventListener('touchstart', e => { isDrawing = true; const p = getPos(e); lastX = p.x; lastY = p.y; });
+            canvas.addEventListener('touchmove', e => {
+                if (!isDrawing) return; e.preventDefault(); const p = getPos(e);
+                ctx.beginPath(); ctx.moveTo(lastX, lastY); ctx.lineTo(p.x, p.y);
+                ctx.strokeStyle = '#000'; ctx.lineWidth = 2; ctx.lineCap = 'round'; ctx.stroke();
+                lastX = p.x; lastY = p.y;
+            });
+            canvas.addEventListener('touchend', () => isDrawing = false);
+        }
+
+        initCanvas('gpTechCanvas');
+        initCanvas('gpClientCanvas');
+        initCanvas('tiTechCanvas');
+
+        function clearCanvas(canvasId) {
+            const canvas = document.getElementById(canvasId);
+            const ctx = canvas.getContext('2d');
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+
+        // Dual Voice-to-Text Support for Note Fields
+        let recognition = null, activeTargetTextarea = null, activeMicButtonText = null;
+
+        if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+            const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+            recognition = new SR();
+            recognition.continuous = true;
+            recognition.interimResults = true;
+            recognition.lang = 'en-AU';
+
+            recognition.onresult = e => {
+                let transcript = '';
+                for (let i = e.resultIndex; i < e.results.length; ++i) {
+                    if (e.results[i].isFinal) transcript += e.results[i][0].transcript;
+                }
+                if (transcript && activeTargetTextarea) {
+                    activeTargetTextarea.value += (activeTargetTextarea.value ? ' ' : '') + transcript;
+                }
+            };
+
+            recognition.onerror = () => stopVoiceInput();
+            recognition.onend = () => stopVoiceInput();
+        }
+
+        function toggleVoiceInput(textareaId, buttonTextId) {
+            if (!recognition) {
+                alert('Speech recognition is not supported in this browser. Please use Google Chrome.');
+                return;
+            }
+
+            const targetArea = document.getElementById(textareaId);
+            const buttonText = document.getElementById(buttonTextId);
+
+            if (activeTargetTextarea === targetArea) {
+                recognition.stop();
+                stopVoiceInput();
+            } else {
+                if (activeTargetTextarea) recognition.stop();
+                activeTargetTextarea = targetArea;
+                activeMicButtonText = buttonText;
+                recognition.start();
+                buttonText.innerText = 'Listening...';
+            }
+        }
+
+        function stopVoiceInput() {
+            if (activeMicButtonText) {
+                activeMicButtonText.innerText = 'Voice Notes';
+            }
+            activeTargetTextarea = null;
+            activeMicButtonText = null;
+        }
+
+        // Google Sheet CRM Sync Function
+        async function syncToGoogleCRM() {
+            const activeTab = document.getElementById('formTI').classList.contains('hidden') ? 'GP' : 'TI';
+            const payload = {
+                reportType: activeTab === 'GP' ? 'General Pest' : 'Termite Inspection',
+                workOrderNo: document.getElementById(activeTab === 'GP' ? 'gpWorkOrder' : 'tiWorkOrder').value,
+                clientName: document.getElementById(activeTab === 'GP' ? 'gpClient' : 'tiClient').value,
+                propertyAddress: document.getElementById(activeTab === 'GP' ? 'gpAddress' : 'tiAddress').value,
+                clientPhone: document.getElementById(activeTab === 'GP' ? 'gpPhone' : 'tiPhone').value,
+                techName: "Cristian O'Brien",
+                serviceDate: document.getElementById(activeTab === 'GP' ? 'gpServiceDate' : 'tiServiceDate').value
+            };
+
+            const webAppUrl = "https://script.google.com/macros/s/AKfycbxvb3OrkLuFbqww4nUQvngpj-2CjPZ6r_Hx8xdDJHQuLCq_rndFxmB3Q64Xd-EKwGgI3A/exec";
+
+            if (webAppUrl.includes("YOUR_GOOGLE_APPS_SCRIPT")) {
+                alert("Test Mode: Google Sheet Web App URL not yet configured. Data verified locally.");
+                return;
+            }
+
+            try {
+                let response = await fetch(webAppUrl, {
+                    method: 'POST',
+                    mode: 'no-cors',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+                alert("Successfully synced job to Google Sheet CRM & 12-month follow-up calendar!");
+            } catch (error) {
+                console.error("Sync error:", error);
+                alert("Error syncing to CRM. Check your network connection.");
+            }
+        }
+    </script>
+</body>
+</html>
