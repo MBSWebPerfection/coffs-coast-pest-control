@@ -1,0 +1,173 @@
+<option value="Brick Veneer">Brick Veneer</option>
+                            <option value="Solid Brick">Solid Brick</option>
+                            <option value="Concrete Block">Concrete Block</option>
+                            <option value="Steel Frame">Steel Frame</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Floor Type</label>
+                        <select id="tiFloorType" class="form-input">
+                            <option value="">Select floor type</option>
+                            <option value="Timber Suspended">Timber Suspended</option>
+                            <option value="Concrete Slab">Concrete Slab</option>
+                            <option value="Composite">Composite</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="form-label">Roof Type</label>
+                        <select id="tiRoofType" class="form-input">
+                            <option value="">Select roof type</option>
+                            <option value="Timber Truss">Timber Truss</option>
+                            <option value="Steel Truss">Steel Truss</option>
+                            <option value="Concrete Tile">Concrete Tile</option>
+                            <option value="Metal Deck">Metal Deck</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                    <div class="md:col-span-2 mt-4">
+                        <label class="form-label">Foundation/Pier Type</label>
+                        <select id="tiFoundation" class="form-input">
+                            <option value="">Select foundation type</option>
+                            <option value="Concrete Stumps">Concrete Stumps</option>
+                            <option value="Brick Pier">Brick Pier</option>
+                            <option value="Timber Stump">Timber Stump</option>
+                            <option value="Concrete Pad">Concrete Pad</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="md:col-span-2 mt-4">
+                    <label class="form-label">Additional Construction Notes</label>
+                    <textarea id="tiConstructionNotes" rows="3" class="form-input w-full" placeholder="Describe any relevant construction details, modifications, or concerns..."></textarea>
+                </div>
+            </section>
+            
+            <!-- Areas Inspected -->
+            <section class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                <h2 class="section-title">Areas Inspected (AS 3660.2 Compliant)</h2>
+                <p class="text-sm text-gray-500 mb-4">Check all areas that were inspected:</p>
+                <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaInterior" class="form-checkbox">
+                        <span>Interior</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaRoofVoid" class="form-checkbox">
+                        <span>Roof Void</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaSubfloor" class="form-checkbox">
+                        <span>Subfloor</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaExterior" class="form-checkbox">
+                        <span>Exterior (within 50m)</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaGarage" class="form-checkbox">
+                        <span>Garage/Carport</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaFences" class="form-checkbox">
+                        <span>Fences & Stumps (within 50m)</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaTrees" class="form-checkbox">
+                        <span>Trees & Landscaping (within 50m)</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaRetainingWalls" class="form-checkbox">
+                        <span>Retaining Walls</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaSubtermite" class="form-checkbox">
+                        <span>Subtermite Shields</span>
+                    </label>
+                    <label class="flex items-center space-x-2">
+                        <input type="checkbox" id="tiAreaOther" class="form-checkbox">
+                        <span>Other:</span>
+                        <input type="text" id="tiAreaOtherSpecify" class="form-input w-48 ml-2" placeholder="Specify">
+                    </label>
+                </div>
+            </section>
+            
+            <!-- Termite Risk Rating -->
+            <section class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                <h2 class="section-title">Subterranean Termite Risk Rating</h2>
+                <p class="text-sm text-gray-500 mb-4">Select the appropriate risk rating based on inspection findings:</p>
+                <div class="space-y-3">
+                    <div class="border rounded-lg p-4">
+                        <label class="flex items-start space-x-3">
+                            <input type="radio" name="tiRiskRating" id="tiRiskLow" class="form-radio mt-1">
+                            <div>
+                                <h3 class="font-medium text-primary-black">Low Risk</h3>
+                                <p class="text-sm text-gray-600">No evidence of termite activity or conducive conditions. Regular inspections recommended.</p>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="border rounded-lg p-4 border-yellow-200 bg-yellow-50">
+                        <label class="flex items-start space-x-3">
+                            <input type="radio" name="tiRiskRating" id="tiRiskModerate" class="form-radio mt-1">
+                            <div>
+                                <h3 class="font-medium text-primary-black">Moderate to High Risk</h3>
+                                <p class="text-sm text-gray-600">Some conducive conditions present but no active termite activity detected. Preventive measures recommended.</p>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="border rounded-lg p-4 border-red-200 bg-red-50">
+                        <label class="flex items-start space-x-3">
+                            <input type="radio" name="tiRiskRating" id="tiRiskHigh" class="form-radio mt-1">
+                            <div>
+                                <h3 class="font-medium text-primary-black">High Risk</h3>
+                                <p class="text-sm text-gray-600">Active termite activity or evidence of infection detected. Immediate treatment required.</p>
+                            </div>
+                        </label>
+                    </div>
+                    
+                    <div class="border rounded-lg p-4 border-gray-200">
+                        <label class="flex items-start space-x-3">
+                            <input type="radio" name="tiRiskRating" id="tiRiskNotApplicable" class="form-radio mt-1">
+                            <div>
+                                <h3 class="font-medium text-primary-black">Not Applicable/Unable to Determine</h3>
+                                <p class="text-sm text-gray-600">Inspection limited due to access restrictions or other factors.</p>
+                            </div>
+                        </label>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Inspection Notes -->
+            <section class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                <h2 class="section-title">Inspection Notes & Recommendations</h2>
+                <textarea id="tiInspectionNotes" rows="5" class="form-input w-full" placeholder="Record detailed observations, moisture readings, conducive conditions, recommendations for treatment or preventive measures, and next inspection date..."></textarea>
+            </section>
+            
+            <!-- Chemical Treatments (if applicable) -->
+            <section class="bg-white rounded-lg shadow-md border border-gray-200 p-6">
+                <h2 class="section-title">Chemical Treatments Applied (if any)</h2>
+                <p class="text-sm text-gray-500 mb-4">Record any chemical treatments applied during or following inspection:</p>
+                <div class="table-container">
+                    <table class="report-table">
+                        <thead>
+                            <tr>
+                                <th class="w-20">#</th>
+                                <th>Trade Name</th>
+                                <th>Active Constituent</th>
+                                <th>Application Method</th>
+                                <th>Location Applied</th>
+                                <th>Rate Used</th>
+                                <th>Amount Used</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="ti-chemical-row">
+                                <td class="text-center">1</td>
+                                <td><input type="text" class="form-input w-full" placeholder="e.g., Termidor HE"></td>
+                                <td><input type="text" class="form-input w-full" placeholder="e.g., Fipronil"></td>
+                                <td><input type="text" class="form-input w-full" placeholder="e.g., Soil Injection"></td>
+                                <td><input type="text
