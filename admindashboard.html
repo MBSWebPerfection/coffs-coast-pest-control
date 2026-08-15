@@ -459,7 +459,7 @@
         }
 
         /* ============================================================
-           SOCIAL MEDIA CALENDAR ENGINE (Videos & Image Media Logic)
+           SOCIAL MEDIA CALENDAR ENGINE (Video & Image Fallbacks)
            ============================================================ */
         const SOCIAL_SCHEMA = [
             { id:'post-1', image:'COFFSCOASTHR-1.jpg',  platform:'Instagram', status:'Draft', topic:'general-pest', angle:'call-to-book', imageVariant:'p1' },
@@ -512,6 +512,14 @@
             socialPosts = [];
         }
 
+        function getMediaHtml(p) {
+            if (p.mediaType === 'video') {
+                return `<video src="${p.mediaUrl}" poster="${p.image}" controls preload="metadata" playsinline class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='block';"></video>
+                        <img src="${p.image}" alt="${p.topic}" class="post-image" style="display:none;" loading="lazy">`;
+            }
+            return `<img src="${p.image}" alt="Scheduled post" class="post-image" loading="lazy">`;
+        }
+
         function socialResolve(){
             if(socialPosts && socialPosts.length){ return socialPosts; }
             const dates = socialAssignSchedule(SOCIAL_SCHEMA.length);
@@ -530,11 +538,7 @@
                 const st = SOCIAL_PLATFORM_STYLES[p.platform] || 'background:#525252;color:#fff;';
                 const val = socialEdits[p.id] !== undefined ? socialEdits[p.id] : (p.caption || '');
                 const isVid = p.mediaType === 'video';
-                
-                // Renders full video HTML controls while falling back to static poster cleanly if the mp4 route is unpopulated
-                const mediaHtml = isVid
-                    ? `<video src="${p.mediaUrl}" poster="${p.image}" controls preload="metadata" playsinline class="w-full h-full object-cover" onerror="this.onerror=null; this.outerHTML='<img src=\'${p.image}\' alt=\'Video preview\' class=\'post-image\'>';"></video>`
-                    : `<img src="${p.image}" alt="Scheduled post ${p.date}" class="post-image" loading="lazy">`;
+                const mediaHtml = getMediaHtml(p);
                 return `
                 <article class="rounded-2xl overflow-hidden border bg-neutral-900 transition ${p.status==='Approved'?'border-green-500/60':'border-neutral-800'}">
                     <div class="relative aspect-square w-full bg-black overflow-hidden">
@@ -591,9 +595,7 @@
                 const isSel = socialSelected.has(p.id);
                 const isDup = dups.has(p.id);
                 const isVid = p.mediaType === 'video';
-                const mediaHtml = isVid
-                    ? `<video src="${p.mediaUrl}" poster="${p.image}" controls preload="metadata" playsinline class="w-full h-full object-cover" onerror="this.onerror=null; this.outerHTML='<img src=\'${p.image}\' alt=\'Video preview\' class=\'post-image\'>';"></video>`
-                    : `<img src="${p.image}" alt="${p.topic}" class="post-image" loading="lazy">`;
+                const mediaHtml = getMediaHtml(p);
                 return `
                 <div class="rounded-xl overflow-hidden border transition ${isSel?'border-white':'border-neutral-800'} ${isDup?'opacity-60':''}">
                     <div class="relative aspect-square bg-black overflow-hidden">
