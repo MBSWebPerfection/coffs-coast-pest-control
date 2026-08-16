@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { Post } from "@/lib/posts";
 import { browserSupabase } from "@/lib/browserSupabase";
 import { POSTS_TABLE } from "@/lib/postsStore";
+import GraphicCanvas from "@/components/GraphicCanvas";
 
 type SaveState = Record<string, "idle" | "saving" | "saved" | "error">;
 
@@ -29,6 +30,11 @@ export default function Dashboard({ initialPosts }: { initialPosts: Post[] }) {
     created: string;
   } | null>(null);
   const [zipAvailable, setZipAvailable] = useState(false);
+  // Campaign generator (Gemini structured JSON + Imagen 3 background).
+  const [campaignTopic, setCampaignTopic] = useState("");
+  const [campaignConcept, setCampaignConcept] = useState<import("@/components/GraphicCanvas").CampaignConcept | null>(null);
+  const [campaignLoading, setCampaignLoading] = useState(false);
+  const [campaignError, setCampaignError] = useState<string | null>(null);
 
   // Fetch the latest generated asset bundle so the client can grab it anytime.
   useEffect(() => {
@@ -67,6 +73,32 @@ export default function Dashboard({ initialPosts }: { initialPosts: Post[] }) {
       /* keep current state */
     }
   }, []);
+
+  /** Trigger the campaign generator: Gemini structured JSON + Imagen bg. */
+  async function generateCampaign() {
+    const topic = campaignTopic.trim();
+    if (!topic || campaignLoading) return;
+    setCampaignLoading(true);
+    setCampaignError(null);
+    try {
+      const res = await fetch("/api/generate-campaign", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ topic }),
+        cache: "no-store",
+      });
+      const data = await res.json();
+      if (data?.ok) {
+        setCampaignConcept(data);
+      } else {
+        setCampaignError(data?.error || "Campaign generation failed.");
+      }
+    } catch {
+      setCampaignError("Campaign generator is currently unavailable.");
+    } finally {
+      setCampaignLoading(false);
+    }
+  }
 
   async function saveCaption(postId: string) {
     const caption = manualEdit[postId];
@@ -255,6 +287,64 @@ export default function Dashboard({ initialPosts }: { initialPosts: Post[] }) {
           </span>
         )}
       </div>
+
+      {/* Campaign graphic generator (Gemini structured JSON + Imagen 3 bg) */}
+      <section className="rounded-2xl border border-neutral-800 bg-neutral-900 p-4 mb-8">
+        <p className="font-semibold text-white">AI Campaign Graphic Generator</p>
+        <p className="text-sm text-neutral-400 mb-3">
+          Describe a topic — Gemini drafts the copy, Imagen 3 creates a raw
+          1:1 background, and the canvas composites logo + typography.
+        </p>
+        <div className="flex flex-wrap gap-2 mb-4">
+          <input
+            value={campaignTopic}
+            onChange={(e) => setCampaignTopic(e.target.value)}
+            onKeyDown={(e) => e.key === "Enter" && generateCampaign()}
+            placeholder='e.g. "Summer Kitchen Ant Control"'
+            className="flex-1 min-w-[200px] rounded-lg border border-neutral-700 bg-black px-3 py-2 text-sm text-white placeholder:text-neutral-500 focus:outline-none focus:border-neutral-500"
+          />
+          <button
+            onClick={generateCampaign}
+            disabled={campaignLoading}
+            className="rounded-lg bg-white px-4 py-2 text-sm font-semibold text-black hover:bg-neutral-200 disabled:opacity-50 transition"
+          >
+            {campaignLoading ? "Generating…" : "Generate campaign"}
+          </button>
+        </div>
+
+        {campaignError && (
+          <p className="mb-3 text-sm text-red-400">
+            {campaignError}{" "}
+            (If no Google key is configured, the canvas falls back to a static
+            brand background — copy still renders.)
+          </p>
+        )}
+
+        {campaignConcept && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+            <div>
+              <GraphicCanvas concept={campaignConcept} />
+            </div>
+            <div className="rounded-xl border border-neutral-800 bg-black p-4">
+              <p className="text-xs text-neutral-400 uppercase tracking-wide mb-1">
+                Data source: {campaignConcept.generated?.source ?? "static"}
+              </p>
+              <dl className="space-y-2 text-sm">
+                <div>
+                  <dt className="text-neutral-400">Campaign type</dt>
+                  <dd className="text-white capitalize">{campaignConcept.campaign_type}</dd>
+                </div>
+                <div>
+                  <dt className="text-neutral-400">Background prompt</dt>
+                  <dd className="text-neutral-300 text-xs">
+                    {campaignConcept.background_image_prompt || "(static fallback)"}
+                  </dd>
+                </div>
+              </dl>
+            </div>
+          </div>
+        )}
+      </section>
 
       {/* Calendar grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
