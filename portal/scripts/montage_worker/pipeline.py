@@ -451,7 +451,38 @@ def package_approved_assets(
                 n += 1
                 arcname = f"{base.rsplit('.', 1)[0]}-{n}{ext}"
             seen.add(arcname)
-            zf.write(src, arcname)
+
+            # ---- Watermark enforcement ------------------------------------
+            # The ZIP download must NEVER ship unwatermarked raw/brand images.
+            # Every raster asset is stamped with the logo into a staged temp
+            # file before packaging. watermark_image() composites the logo onto
+            # a solid-black 1080x1080 letterbox (bottom-right) without cropping
+            # or distorting the source — and is idempotent, so re-stamping an
+            # already-watermarked source is harmless and produces the same logo
+            # placement. Video assets are passed through untouched (their logo is
+            # already baked at render time by FFmpeg).
+            write_src = src
+            if not is_video and _logo_asset_path(portal_public).exists():
+                staged = dest_dir / f".wm-{src.stem}{ext}"
+                try:
+                    watermark_image(src, staged, portal_public)
+                    if staged.exists():
+                        write_src = staged
+                except Exception:
+                    # Never fall back to an unwatermarked raw image: skip this
+                    # asset rather than ship a logo-less download.
+                    write_src = Path()
+            if not write_src or not write_src.is_file():
+                continue
+            zf.write(write_src, arcname)
+
+    # Remove staged watermark temp files (/.wm-*) so they don't pollute the
+    # zips directory or get picked up by later listings.
+    for tmp in dest_dir.glob(".wm-*"):
+        try:
+            tmp.unlink()
+        except OSError:
+            pass
 
     return zip_path if zip_path.exists() else dest_dir / "none"
 
