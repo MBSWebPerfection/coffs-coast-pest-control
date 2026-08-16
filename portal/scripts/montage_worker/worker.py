@@ -531,31 +531,47 @@ def send_assets_ready_email(zip_path: Path, counts: dict[str, int], asset_list: 
     user = os.environ.get("SMTP_USER", "").strip()
     password = os.environ.get("SMTP_PASSWORD", "").strip()
     recipient = os.environ.get("NOTIFICATION_EMAIL", DEFAULT_NOTIFICATION_EMAIL).strip()
+    cc_recipients = [
+        r.strip()
+        for r in os.environ.get("NOTIFICATION_CC", "cristian@coffscoastpc.com.au").split(",")
+        if r.strip()
+    ]
 
     if not host or not user:
         return {"sent": False, "skipped": True, "reason": "SMTP not configured (SMTP_HOST/SMTP_USER)."}
 
     port = int(os.environ.get("SMTP_PORT", "587").strip() or "587")
     from_addr = os.environ.get("SMTP_FROM", user).strip() or user
+    # Public base URL so relative /paths become fully clickable http(s) links.
+    public_base = os.environ.get("PUBLIC_SITE_URL", "https://coffscoastpc.com.au").rstrip("/")
 
-    # Asset manifest lines (name + kind + path + caption where available).
+    def to_abs(p: str) -> str:
+        """Return a clickable absolute URL for a relative /path or keep http(s)."""
+        if not p:
+            return p
+        if p.startswith(("http://", "https://")):
+            return p
+        return f"{public_base}{p if p.startswith('/') else '/' + p}"
+
+    # Asset manifest lines (name + kind + absolute clickable path + caption).
     lines: list[str] = []
     for a in asset_list or []:
         rid = a.get("id") or "asset"
         kind = a.get("mediaType") or ("video" if a.get("mediaUrl") else "image")
         path = a.get("path") or a.get("mediaUrl") or a.get("image") or ""
         caption = (a.get("caption") or "").strip()
-        lines.append(f"• {rid} ({kind}): {path or '(file)'}" + (f" — {caption}" if caption else ""))
+        lines.append(f"• {rid} ({kind}): {to_abs(path)}" + (f" — {caption}" if caption else ""))
 
     img_n = counts.get("images", 0)
     vid_n = counts.get("videos", 0)
     # Preferred download link: permanent Supabase Storage public URL (serverless
-    # safe). Falls back to the portal's /zips/ path when storage isn't used.
+    # safe). Otherwise normalize the relative /zips path to an absolute link.
     if download_url and download_url.startswith(("http://", "https://")):
         download = download_url
         download_note = "This is a permanent secure link — click to download the full approved bundle."
     else:
-        download = download_url or (f"/zips/{zip_path.name}" if zip_path and zip_path.name else str(zip_path))
+        rel = download_url or (f"/zips/{zip_path.name}" if zip_path and zip_path.name else str(zip_path))
+        download = to_abs(rel)
         download_note = (
             "(The portal serves /zips/ from public/zips/ — for serverless/Vercel "
             "deployments please use the Supabase Storage public URL.)"
@@ -585,8 +601,11 @@ def send_assets_ready_email(zip_path: Path, counts: dict[str, int], asset_list: 
     msg["Subject"] = subject
     msg["From"] = from_addr
     msg["To"] = recipient
+    if cc_recipients:
+        msg["Cc"] = ", ".join(cc_recipients)
     msg.set_content(body)
 
+    targets = [recipient, *cc_recipients]
     try:
         with smtplib.SMTP(host, port, timeout=30) as server:
             server.ehlo()
@@ -596,7 +615,7 @@ def send_assets_ready_email(zip_path: Path, counts: dict[str, int], asset_list: 
             if user and password:
                 server.login(user, password)
             server.send_message(msg)
-        return {"sent": True, "to": recipient, "subject": subject, "download": download}
+        return {"sent": True, "to": targets, "subject": subject, "download": download}
     except Exception as exc:  # pragma: no cover
         return {"sent": False, "skipped": False, "error": str(exc)}
 

@@ -63,7 +63,53 @@
         }
     </style>
 </head>
-<body class="bg-slate-950 text-slate-100 min-h-screen font-sans text-xs">
+<body class="bg-slate-950 text-slate-100 min-h-screen font-sans text-xs" data-auth-gate>
+    <div id="authScreen" class="fixed inset-0 z-[999] flex items-center justify-center bg-black hidden">
+        <div class="w-full max-w-sm mx-4 p-8 rounded-2xl border border-neutral-800 bg-neutral-900 text-center">
+            <div class="mx-auto mb-4 w-16 h-16 rounded-xl overflow-hidden bg-black flex items-center justify-center logo-black-shell">
+                <img src="logo-no-background.png" alt="Coffs Coast Pest Control logo">
+            </div>
+            <h1 class="text-lg font-bold text-white mb-1">Command Center</h1>
+            <p class="text-xs text-neutral-400 mb-6">Enter your password to continue</p>
+            <form id="authForm" class="space-y-3">
+                <input id="authPass" type="password" autocomplete="current-password" placeholder="Password"
+                    class="w-full px-4 py-3 rounded-lg bg-black border border-neutral-700 text-white text-sm outline-none focus:border-white">
+                <button type="submit" class="w-full py-3 rounded-lg bg-white text-black text-sm font-bold hover:bg-neutral-200 transition cursor-pointer">Unlock</button>
+                <p id="authError" class="text-[11px] text-red-400 mt-2 hidden">Incorrect password. Please try again.</p>
+            </form>
+            <p class="text-[10px] text-neutral-600 mt-6">Authorized staff only · Unauthorized access is tracked.</p>
+        </div>
+    </div>
+    <script>
+        // ===== Dashboard auth gate =====
+        (function(){
+            var SECRET = 'mysecretpassword123!';
+            var authed = false;
+            try { authed = sessionStorage.getItem('admin_authenticated') === 'true'; } catch(e){}
+            if (!authed) {
+                var screen = document.getElementById('authScreen');
+                if (screen) screen.classList.remove('hidden');
+            }
+            var form = document.getElementById('authForm');
+            if (form) {
+                form.addEventListener('submit', function(ev){
+                    ev.preventDefault();
+                    var val = (document.getElementById('authPass') || {}).value || '';
+                    var err = document.getElementById('authError');
+                    if (val === SECRET) {
+                        try { sessionStorage.setItem('admin_authenticated', 'true'); } catch(e){}
+                        var s = document.getElementById('authScreen');
+                        if (s) s.classList.add('hidden');
+                        window.scrollTo(0,0);
+                    } else {
+                        if (err) { err.classList.remove('hidden'); }
+                        var p = document.getElementById('authPass');
+                        if (p) { p.value=''; p.focus(); }
+                    }
+                });
+            }
+        })();
+    </script>
 
     <header class="no-print bg-slate-900 border-b border-slate-800 sticky top-0 z-50 px-4 sm:px-8 py-3 flex flex-col sm:flex-row justify-between items-center gap-4 shadow-xl">
         <div class="flex items-center gap-3">
@@ -559,6 +605,10 @@
                             <button onclick="socialDownload('${p.id}')" class="flex-1 py-2 rounded-lg border border-neutral-700 text-white text-sm font-medium hover:border-white transition cursor-pointer">⬇ Download</button>
                         </div>
                         <div class="flex items-center gap-2">
+                            <button onclick="socialRegenerate('${p.id}')" class="flex-1 py-2 rounded-lg border border-neutral-700 text-white text-sm font-medium hover:border-white transition cursor-pointer">↻ Regenerate</button>
+                            <button onclick="socialSwapImage('${p.id}')" class="flex-1 py-2 rounded-lg border border-neutral-700 text-white text-sm font-medium hover:border-white transition cursor-pointer">⬆ Swap image</button>
+                        </div>
+                        <div class="flex items-center gap-2">
                             <button onclick="socialSave('${p.id}')" class="flex-1 py-2 rounded-lg border border-neutral-700 text-white text-sm font-medium hover:border-white transition cursor-pointer">Save caption</button>
                             ${p.status!=='Approved'?`<button onclick="socialApprove('${p.id}')" class="flex-1 py-2 rounded-lg bg-white text-black text-sm font-semibold hover:bg-neutral-200 transition cursor-pointer">Approve</button>`:`<span class="flex-1 py-2 rounded-lg bg-green-500/20 text-green-400 text-sm font-semibold text-center">Approved ✓</span>`}
                         </div>
@@ -583,6 +633,67 @@
             if(found){ found.status='Approved'; }
             socialPosts = socialPosts.map(p=>p.id===postId?{...p,status:'Approved'}:p);
             socialRender();
+            socialNotifyApproval(postId);
+        }
+        function socialRegenerate(postId){
+            const list = socialResolve();
+            const found = list.find(p=>p.id===postId);
+            if(!found) return;
+            // Regenerate this item via the portal's Google-API regeneration
+            // endpoint (Imagen/Veo fallback). If the portal isn't reachable we
+            // gracefully keep the current asset rather than failing the card.
+            fetch('/api/regenerate', {
+                method:'POST',
+                headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ id: postId, topic: found.topic || '', angle: found.angle || '', caption: (socialEdits[postId]!==undefined?socialEdits[postId]:found.caption)||'' })
+            }).then(r=>r.json()).then(d=>{
+                if(d && d.ok){
+                    if(found.mediaType==='video'){ if(d.mediaUrl) found.mediaUrl=d.mediaUrl; }
+                    else if(d.image){ found.image=d.image; }
+                    alert('Regenerated: '+postId);
+                    socialRender();
+                } else {
+                    alert(d && d.error ? ('Regeneration unavailable: '+d.error) : 'Regeneration unavailable.');
+                }
+            }).catch(()=>{ alert('Regeneration unavailable — portal not reachable. Try swapping an image instead.'); });
+        }
+        function socialSwapImage(postId){
+            // Let the operator replace this item's visual with a client upload.
+            const inp = document.createElement('input');
+            inp.type='file'; inp.accept='image/*,video/*';
+            inp.onchange = function(){
+                const file = inp.files && inp.files[0];
+                if(!file) return;
+                const reader = new FileReader();
+                reader.onload = function(){
+                    const dataUrl = reader.result;
+                    const list = socialResolve();
+                    const found = list.find(p=>p.id===postId);
+                    if(!found) return;
+                    const isVid = file.type && file.type.startsWith('video/');
+                    if(isVid){ found.mediaType='video'; found.mediaUrl=dataUrl; }
+                    else { found.mediaType='image'; found.image=dataUrl; }
+                    // Update in-memory and (when live) persist via upload endpoint.
+                    socialPosts = socialPosts.map(p=>p.id===postId?{...found}:p);
+                    socialRender();
+                    fetch('/api/upload',{method:'POST',headers:{'Content-Type':'application/json'},
+                        body:JSON.stringify({ image: dataUrl, caption: (socialEdits[postId]!==undefined?socialEdits[postId]:found.caption)||'', filename:file.name, topic:found.topic }) })
+                        .catch(()=>{});
+                };
+                reader.readAsDataURL(file);
+            };
+            inp.click();
+        }
+        function socialNotifyApproval(postId){
+            const list = socialResolve();
+            const found = list.find(p=>p.id===postId);
+            const caption = (found && (socialEdits[postId]!==undefined?socialEdits[postId]:found.caption)) || '';
+            // Fire a serverless alert to the review pipeline so Dan receives an
+            // email with the download ZIP link the moment Cristian approves.
+            fetch('/api/notify', {
+                method:'POST', headers:{'Content-Type':'application/json'},
+                body: JSON.stringify({ event:'approved', id: postId, caption })
+            }).catch(()=>{});
         }
         function socialRefresh(){ socialLoad().then(socialRender); }
         function socialLogoutRedirect(){ window.open('/login', '_blank'); }

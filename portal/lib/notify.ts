@@ -89,3 +89,62 @@ export async function notifyClientReady(opts?: {
 
   return { sent: false, method: "none", to, subject, details: "No notification channel configured. Add N8N_WEBHOOK_URL or SMTP_*. Skipping." };
 }
+
+/**
+ * notifyApproved — fires an alert the moment Cristian approves a post on the
+ * dashboard, so Web Perfection (Dan) is emailed with a clickable link to the
+ * approved bundle ZIP so they can download/review it immediately.
+ *
+ * Uses the same SMTP backdoor as notifyClientReady (zero-maintenance, OFF
+ * until SMTP_* is configured). Gracefully skips when SMTP isn't configured so
+ * the Approve button never breaks.
+ */
+export async function notifyApproved(opts?: {
+  postId?: string;
+  caption?: string;
+  zipUrl?: string;
+}): Promise<NotifyResult> {
+  const postId = opts?.postId || "post";
+  const caption = opts?.caption || "";
+  const zipUrl = opts?.zipUrl || process.env.APPROVED_ZIP_URL || "";
+  // Approval alerts always route to the Web Perfection review inbox (Dan).
+  const to = process.env.APPROVAL_NOTIFY_EMAIL || process.env.CLIENT_NOTIFY_EMAIL || "";
+  const subject = "Coffs Coast Pest Control — post approved & ready to publish";
+  const bodyLines = [
+    "A post was approved and flagged for final review by the client.",
+    "",
+    `Post: ${postId}`,
+    caption ? `Caption: ${caption}` : "",
+    "",
+    zipUrl
+      ? `Download the approved bundle: ${zipUrl}`
+      : "No download ZIP link is configured (APPROVED_ZIP_URL).",
+    "",
+    "Reply or open the portal to publish to Meta Business Suite / Google Business Profile.",
+    "— Coffs Coast Pest Control automation",
+  ].filter(Boolean);
+
+  const smtpHost = process.env.SMTP_HOST;
+  if (smtpHost && process.env.SMTP_USER && process.env.SMTP_PASS && to) {
+    try {
+      const mod = "nodemailer";
+      const nodemailer = await import(mod);
+      const transporter = nodemailer.createTransport({
+        host: smtpHost,
+        port: Number(process.env.SMTP_PORT || "587"),
+        secure: process.env.SMTP_SECURE === "true",
+        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+      });
+      await transporter.sendMail({
+        from: process.env.SMTP_FROM || process.env.SMTP_USER,
+        to,
+        subject,
+        text: bodyLines.join("\n"),
+      });
+      return { sent: true, method: "smtp", to, subject, details: "Approval alert SMTP email sent." };
+    } catch (e) {
+      return { sent: false, method: "smtp", to, subject, details: `Approval SMTP failed: ${e}` };
+    }
+  }
+  return { sent: false, method: "none", to, subject, details: "No SMTP configured for approval alerts. Skipping." };
+}
